@@ -6,6 +6,8 @@ I have made use of a few external libraries to complete this challenge. To insta
 
 `pip install -r requirements.txt`
 
+N.B. also: this project is written entirely in python3, and there should be a python3 installation on your system in order to execute these files. Unexpected behavior may occur if Python2 is used instead.
+
 ## Common Passwords Check
 
 To execute this script, run `src/password_check [STRING]`, where `[STRING]` is potentially a commonly used password. The script will print a message indicating whether the password is one of the list of the 1000 most commonly used passwords according to a list file which is configurable within the script, but defaults to the file supplied in the exercise instructions.
