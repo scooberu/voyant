@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+from flask import Flask, request, abort
+app = Flask(__name__)
+
+# Given a beginning integer and an ending integer, calculate FizzBuzz
+# for that range (where multiples of 3 are replaced with Fizz, multiples
+# of 5 are replaced with Buzz, and multiples of both are replaced with
+# FizzBuzz.
+# @param [Integer] begin The first integer in the range to be evaluated, inclusive
+# @param [Integer] end The last integer in the range to be evaluated, inclusive
+# @return [String] A string representation of newline-separated FizzBuzz results,
+#                  one number (or Fizz/Buzz/Fizzbuzz) per line.
+def calc_fizzbuzz(begin, end):
+    ret = []
+
+    for i in range(begin, end+1):
+        tmp = ''
+        if i % 3 == 0:
+            tmp += 'Fizz'
+        if i % 5 == 0:
+            tmp += 'Buzz'
+
+        if tmp != '':
+            ret.append(tmp)
+        else:
+            ret.append(str(i))
+
+    return ('\n'.join(ret) + '\n')
+
+# Flask Route: /fizzbuzz. When a GET request is received by this server at the,
+# /fizzbuzz endpoint, run the calc_fizzbuzz() method and return the resulting string
+# back to the requestor.
+@app.route('/fizzbuzz', methods=['GET'])
+def fizz_buzz():
+    # First try to get the urlencoded "begin" and "end" args from the URL
+    # and ensure that they can be casted to ints. If either are missing or
+    # if they are not int-able, throw a 400 back to the requestor.
+    try:
+        begin = int(request.args.get('begin'))
+        end = int(request.args.get('end'))
+    except:
+        abort(400)
+
+    # If we receive a beginning value greated than the end value, that's invalid
+    # and will mess up the calc_fizzbuzz() method, so instead return a 400 here.
+    if begin > end:
+        abort(400)
+
+    return calc_fizzbuzz(begin, end)
+
+if __name__ == '__main__':
+    # Setting port 80 will necessitate that we run this file as root
+    app.run(port=80)

@@ -3,8 +3,13 @@
 import re, sys, os, json
 import requests
 
+# The API key for this will be stored in the ENV as a security measure
+# (See README)
 API_KEY = os.environ['OWM_API_KEY']
 
+# Pull the current weather for a given US ZIP code as a JSON from OpenWeatherMap's free API
+# @param [String] zipcode A string representation of a valid 5-digit US ZIP code
+# @return [JSON] The body of the response from the API server as a serialized data structure
 def fetch_weather(zipcode):
 	path = 'http://api.openweathermap.org/data/2.5/weather?zip={},us'.format(zipcode)
 	path += '&APPID={}'.format(API_KEY)
@@ -12,6 +17,12 @@ def fetch_weather(zipcode):
 
 	return response.text
 
+# Convert the JSON result obtained from fetch_weather() into a python data structure to be
+# consumed by main(). This method may be modified later to obtain more data from the API's
+# response; if e.g. more data about weather conditions is desired, the return dict can be
+# made to include other keys for the extra detail we want.
+# @param [JSON] weather_result Serialized result of a query to OWM, assuming their formatting
+# @return [Dictionary] map of types of return data to actual values
 def parse_json(weather_result):
 	data = json.loads(weather_result)
 
@@ -21,6 +32,8 @@ def parse_json(weather_result):
 
 	return ret
 
+# Main method, calls fetch_weather and parse_json and prints a formatted result
+# @param [String] zipcode A string representation of a valid 5-digit US ZIP code
 def main(zipcode):
 	weather_result = fetch_weather(zipcode)
 	parsed_result = parse_json(weather_result)
@@ -28,11 +41,14 @@ def main(zipcode):
 	print("{} {} degrees Kelvin".format(parsed_result['weather'], parsed_result['temp']))
 
 if __name__ == '__main__':
+        # Check whether the right number of args were supplied at the CLI
 	if len(sys.argv) != 2:
-		print('Usage: python3 weather.py 80301')
+		print('Usage: weather 80301')
 		sys.exit()
 
 	zipcode = sys.argv[1]
+
+        # Validate that the zipcode supplied is 5 digits
 	match = re.search(r'\d{5}', zipcode)
 
 	if match:
