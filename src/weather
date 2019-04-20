@@ -49,7 +49,7 @@ if __name__ == '__main__':
 	zipcode = sys.argv[1]
 
         # Validate that the zipcode supplied is 5 digits
-	match = re.search(r'\d{5}', zipcode)
+	match = re.search(r'^\d{5}$', zipcode)
 
 	if match:
 		main(zipcode)
